@@ -1,12 +1,14 @@
 package com.glody.glodyAPI.controller;
 
 import com.glody.glodyAPI.model.entity.Session;
+import com.glody.glodyAPI.model.dto.SessionDto;
 import com.glody.glodyAPI.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/sessions")
@@ -17,27 +19,25 @@ public class SessionController {
 
     @GetMapping
     public ResponseEntity<List<Session>> getAll() {
-        List<Session> list = sessionService.findAll();
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(sessionService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Session> getById(@PathVariable Integer id) {
-        return sessionService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<Session> result = sessionService.findById(id);
+        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Session> create(@RequestBody Session session) {
-        Session saved = sessionService.save(session);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<Session> create(@RequestBody SessionDto dto) {
+        Session entity = new Session();
+        return ResponseEntity.ok(sessionService.save(entity));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Session> update(@PathVariable Integer id, @RequestBody Session session) {
-        Session updated = sessionService.save(session);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Session> update(@PathVariable Integer id, @RequestBody SessionDto dto) {
+        Session entity = new Session();
+        return ResponseEntity.ok(sessionService.save(entity));
     }
 
     @DeleteMapping("/{id}")

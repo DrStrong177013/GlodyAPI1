@@ -1,12 +1,14 @@
 package com.glody.glodyAPI.controller;
 
 import com.glody.glodyAPI.model.entity.UserNationality;
+import com.glody.glodyAPI.model.dto.UserNationalityDto;
 import com.glody.glodyAPI.service.UserNationalityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/userNationalitys")
@@ -17,27 +19,25 @@ public class UserNationalityController {
 
     @GetMapping
     public ResponseEntity<List<UserNationality>> getAll() {
-        List<UserNationality> list = userNationalityService.findAll();
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(userNationalityService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserNationality> getById(@PathVariable Integer id) {
-        return userNationalityService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<UserNationality> result = userNationalityService.findById(id);
+        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<UserNationality> create(@RequestBody UserNationality userNationality) {
-        UserNationality saved = userNationalityService.save(userNationality);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<UserNationality> create(@RequestBody UserNationalityDto dto) {
+        UserNationality entity = new UserNationality();
+        return ResponseEntity.ok(userNationalityService.save(entity));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserNationality> update(@PathVariable Integer id, @RequestBody UserNationality userNationality) {
-        UserNationality updated = userNationalityService.save(userNationality);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<UserNationality> update(@PathVariable Integer id, @RequestBody UserNationalityDto dto) {
+        UserNationality entity = new UserNationality();
+        return ResponseEntity.ok(userNationalityService.save(entity));
     }
 
     @DeleteMapping("/{id}")

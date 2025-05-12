@@ -1,12 +1,14 @@
 package com.glody.glodyAPI.controller;
 
 import com.glody.glodyAPI.model.entity.Payment;
+import com.glody.glodyAPI.model.dto.PaymentDto;
 import com.glody.glodyAPI.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/payments")
@@ -17,27 +19,25 @@ public class PaymentController {
 
     @GetMapping
     public ResponseEntity<List<Payment>> getAll() {
-        List<Payment> list = paymentService.findAll();
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(paymentService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Payment> getById(@PathVariable Integer id) {
-        return paymentService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<Payment> result = paymentService.findById(id);
+        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Payment> create(@RequestBody Payment payment) {
-        Payment saved = paymentService.save(payment);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<Payment> create(@RequestBody PaymentDto dto) {
+        Payment entity = new Payment();
+        return ResponseEntity.ok(paymentService.save(entity));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Payment> update(@PathVariable Integer id, @RequestBody Payment payment) {
-        Payment updated = paymentService.save(payment);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Payment> update(@PathVariable Integer id, @RequestBody PaymentDto dto) {
+        Payment entity = new Payment();
+        return ResponseEntity.ok(paymentService.save(entity));
     }
 
     @DeleteMapping("/{id}")

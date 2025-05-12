@@ -1,12 +1,14 @@
 package com.glody.glodyAPI.controller;
 
 import com.glody.glodyAPI.model.entity.Permission;
+import com.glody.glodyAPI.model.dto.PermissionDto;
 import com.glody.glodyAPI.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/permissions")
@@ -17,27 +19,25 @@ public class PermissionController {
 
     @GetMapping
     public ResponseEntity<List<Permission>> getAll() {
-        List<Permission> list = permissionService.findAll();
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(permissionService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Permission> getById(@PathVariable Integer id) {
-        return permissionService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<Permission> result = permissionService.findById(id);
+        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Permission> create(@RequestBody Permission permission) {
-        Permission saved = permissionService.save(permission);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<Permission> create(@RequestBody PermissionDto dto) {
+        Permission entity = new Permission();
+        return ResponseEntity.ok(permissionService.save(entity));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Permission> update(@PathVariable Integer id, @RequestBody Permission permission) {
-        Permission updated = permissionService.save(permission);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Permission> update(@PathVariable Integer id, @RequestBody PermissionDto dto) {
+        Permission entity = new Permission();
+        return ResponseEntity.ok(permissionService.save(entity));
     }
 
     @DeleteMapping("/{id}")

@@ -1,12 +1,14 @@
 package com.glody.glodyAPI.controller;
 
 import com.glody.glodyAPI.model.entity.Profile;
+import com.glody.glodyAPI.model.dto.ProfileDto;
 import com.glody.glodyAPI.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/profiles")
@@ -17,27 +19,25 @@ public class ProfileController {
 
     @GetMapping
     public ResponseEntity<List<Profile>> getAll() {
-        List<Profile> list = profileService.findAll();
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(profileService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Profile> getById(@PathVariable Integer id) {
-        return profileService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<Profile> result = profileService.findById(id);
+        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Profile> create(@RequestBody Profile profile) {
-        Profile saved = profileService.save(profile);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<Profile> create(@RequestBody ProfileDto dto) {
+        Profile entity = new Profile();
+        return ResponseEntity.ok(profileService.save(entity));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Profile> update(@PathVariable Integer id, @RequestBody Profile profile) {
-        Profile updated = profileService.save(profile);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Profile> update(@PathVariable Integer id, @RequestBody ProfileDto dto) {
+        Profile entity = new Profile();
+        return ResponseEntity.ok(profileService.save(entity));
     }
 
     @DeleteMapping("/{id}")

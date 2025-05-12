@@ -1,12 +1,14 @@
 package com.glody.glodyAPI.controller;
 
 import com.glody.glodyAPI.model.entity.DegreeLevel;
+import com.glody.glodyAPI.model.dto.DegreeLevelDto;
 import com.glody.glodyAPI.service.DegreeLevelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/degreeLevels")
@@ -17,27 +19,25 @@ public class DegreeLevelController {
 
     @GetMapping
     public ResponseEntity<List<DegreeLevel>> getAll() {
-        List<DegreeLevel> list = degreeLevelService.findAll();
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(degreeLevelService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DegreeLevel> getById(@PathVariable Integer id) {
-        return degreeLevelService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<DegreeLevel> result = degreeLevelService.findById(id);
+        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<DegreeLevel> create(@RequestBody DegreeLevel degreeLevel) {
-        DegreeLevel saved = degreeLevelService.save(degreeLevel);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<DegreeLevel> create(@RequestBody DegreeLevelDto dto) {
+        DegreeLevel entity = new DegreeLevel();
+        return ResponseEntity.ok(degreeLevelService.save(entity));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DegreeLevel> update(@PathVariable Integer id, @RequestBody DegreeLevel degreeLevel) {
-        DegreeLevel updated = degreeLevelService.save(degreeLevel);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<DegreeLevel> update(@PathVariable Integer id, @RequestBody DegreeLevelDto dto) {
+        DegreeLevel entity = new DegreeLevel();
+        return ResponseEntity.ok(degreeLevelService.save(entity));
     }
 
     @DeleteMapping("/{id}")

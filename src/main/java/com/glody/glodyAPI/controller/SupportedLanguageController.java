@@ -1,12 +1,14 @@
 package com.glody.glodyAPI.controller;
 
 import com.glody.glodyAPI.model.entity.SupportedLanguage;
+import com.glody.glodyAPI.model.dto.SupportedLanguageDto;
 import com.glody.glodyAPI.service.SupportedLanguageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/supportedLanguages")
@@ -17,27 +19,25 @@ public class SupportedLanguageController {
 
     @GetMapping
     public ResponseEntity<List<SupportedLanguage>> getAll() {
-        List<SupportedLanguage> list = supportedLanguageService.findAll();
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(supportedLanguageService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<SupportedLanguage> getById(@PathVariable String id) {
-        return supportedLanguageService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<SupportedLanguage> result = supportedLanguageService.findById(id);
+        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<SupportedLanguage> create(@RequestBody SupportedLanguage supportedLanguage) {
-        SupportedLanguage saved = supportedLanguageService.save(supportedLanguage);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<SupportedLanguage> create(@RequestBody SupportedLanguageDto dto) {
+        SupportedLanguage entity = new SupportedLanguage();
+        return ResponseEntity.ok(supportedLanguageService.save(entity));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SupportedLanguage> update(@PathVariable String id, @RequestBody SupportedLanguage supportedLanguage) {
-        SupportedLanguage updated = supportedLanguageService.save(supportedLanguage);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<SupportedLanguage> update(@PathVariable String id, @RequestBody SupportedLanguageDto dto) {
+        SupportedLanguage entity = new SupportedLanguage();
+        return ResponseEntity.ok(supportedLanguageService.save(entity));
     }
 
     @DeleteMapping("/{id}")

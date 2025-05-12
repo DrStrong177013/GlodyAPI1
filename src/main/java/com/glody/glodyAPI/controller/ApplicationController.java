@@ -1,12 +1,14 @@
 package com.glody.glodyAPI.controller;
 
 import com.glody.glodyAPI.model.entity.Application;
+import com.glody.glodyAPI.model.dto.ApplicationDto;
 import com.glody.glodyAPI.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/applications")
@@ -17,27 +19,25 @@ public class ApplicationController {
 
     @GetMapping
     public ResponseEntity<List<Application>> getAll() {
-        List<Application> list = applicationService.findAll();
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(applicationService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Application> getById(@PathVariable Integer id) {
-        return applicationService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<Application> result = applicationService.findById(id);
+        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Application> create(@RequestBody Application application) {
-        Application saved = applicationService.save(application);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<Application> create(@RequestBody ApplicationDto dto) {
+        Application entity = new Application();
+        return ResponseEntity.ok(applicationService.save(entity));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Application> update(@PathVariable Integer id, @RequestBody Application application) {
-        Application updated = applicationService.save(application);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<Application> update(@PathVariable Integer id, @RequestBody ApplicationDto dto) {
+        Application entity = new Application();
+        return ResponseEntity.ok(applicationService.save(entity));
     }
 
     @DeleteMapping("/{id}")
